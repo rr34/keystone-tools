@@ -30,5 +30,4 @@ app.get('/api/files', async (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 5000;
->>>>>>> 8000d8d (Ready for production. .env used. Simple and works.)
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
