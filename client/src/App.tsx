@@ -22,7 +22,7 @@ function App() {
   useEffect(() => {
     const fetchFiles = async () => {
       try {        
-        const res = await fetch(`${API_URL}/api/files`);
+        const res = await fetch(`${API_URL}/files`);
         if (!res.ok) throw new Error('Failed to fetch files')
           const data = await res.json();
           console.log(data);

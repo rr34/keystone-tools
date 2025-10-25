@@ -4,11 +4,38 @@ import cors from 'cors';
 import { pool } from './database.js';
 
 const app = express();
-app.use(cors());
 app.use(express.json());
 
+const PORT = process.env.PORT || 5000;
+
+if (!process.env.CLIENT_IP) {
+  console.error("CLIENT_IP environment variable not set!");
+  process.exit(1);
+}
+
+const allowedOrigins = [
+  process.env.CLIENT_IP,
+	'http://localhost:5173',
+	'http://localhost',
+];
+
+console.log("Allowed origins:", allowedOrigins);
+console.log("Current working directory:", process.cwd());
+console.log("CLIENT_IP environment variable:", process.env.CLIENT_IP);
+
+app.use(cors({
+	origin: function (origin, callback) {
+		if (!origin || allowedOrigins.includes(origin)) {
+			return callback (null, true);
+		}
+		return callback(new Error(`CORS not allowed from origin: ${origin}`));
+	},
+	credentials: true
+}));
+
+
 // Route to get files data
-app.get('/api/files', async (req, res) => {
+app.get('/files', async (req, res) => {
   try {
     const query = `
       SELECT Filename, FileType, FileSource, COUNT(fid) AS PointsCount
@@ -29,5 +56,4 @@ app.get('/api/files', async (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
